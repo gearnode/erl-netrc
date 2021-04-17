@@ -1,0 +1,9 @@
+{application, netrc,
+ [{description, "A parser for netrc credential files."},
+  {vsn, "git"},
+  {registered, []},
+  {applications,
+   [kernel,
+    stdlib]},
+  {env, []},
+  {modules, []}]}.
