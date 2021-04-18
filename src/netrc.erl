@@ -14,13 +14,25 @@
 
 -module(netrc).
 
--export([path/0, parse/0, parse/1, parse_data/1,
+-export([search/2,
+         path/0, parse/0, parse/1, parse_data/1,
          format_error_reason/1]).
 
 -export_type([result/0, result/1, error_reason/0, entry/0]).
 
 -type result() :: ok | {error, error_reason()}.
 -type result(Type) :: {ok, Type} | {error, error_reason()}.
+
+-type entry() ::
+        #{machine := binary() | default,
+          port => binary() | inet:port_number(),
+          login => binary(),
+          password => binary()}.
+
+-type query() ::
+        #{machine := binary(),
+          port => binary() | inet:port_number(),
+          login => binary()}.
 
 -type error_reason() ::
         {read_file, term(), file:name_all()}
@@ -30,11 +42,13 @@
       | {truncated_token, binary()}
       | {invalid_token, binary(), binary(), unicode:chardata()}.
 
--type entry() ::
-        #{machine := binary() | default,
-          port => inet:port_number(),
-          login => binary(),
-          password => binary()}.
+-spec search(query(), [entry()]) -> [entry()].
+search(Query, Entries) ->
+  [Entry || Entry <- Entries, match(Query, Entry)].
+
+-spec match(query(), entry()) -> boolean().
+match(Query, Entry) ->
+  maps:with(maps:keys(Query), Entry) =:= Query.
 
 -spec path() -> file:name_all().
 path() ->
