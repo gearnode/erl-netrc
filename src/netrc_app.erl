@@ -12,14 +12,14 @@
 %% ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 %% IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-{application, netrc,
- [{description, "A parser for netrc credential files."},
-  {vsn, "git"},
-  {registered, [netrc_cache]},
-  {mod, {netrc_app, []}},
-  {applications,
-   [kernel,
-    stdlib,
-    et]},
-  {env, []},
-  {modules, []}]}.
+-module(netrc_app).
+
+-behaviour(application).
+
+-export([start/2, stop/1]).
+
+start(_StartType, _Args) ->
+  netrc_sup:start_link().
+
+stop(_State) ->
+  ok.

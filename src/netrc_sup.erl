@@ -12,14 +12,20 @@
 %% ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 %% IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-{application, netrc,
- [{description, "A parser for netrc credential files."},
-  {vsn, "git"},
-  {registered, [netrc_cache]},
-  {mod, {netrc_app, []}},
-  {applications,
-   [kernel,
-    stdlib,
-    et]},
-  {env, []},
-  {modules, []}]}.
+-module(netrc_sup).
+
+-behaviour(supervisor).
+
+-export([start_link/0]).
+-export([init/1]).
+
+start_link() ->
+  supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+
+init([]) ->
+  Children = [#{id => cache,
+                start => {netrc_cache, start_link, [#{}]}}],
+  Flags = #{strategy => one_for_one,
+            intensity => 1,
+            period => 5},
+  {ok, {Flags, Children}}.

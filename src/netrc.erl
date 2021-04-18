@@ -15,7 +15,7 @@
 -module(netrc).
 
 -export([search/2,
-         path/0, parse/0, parse/1, parse_data/1,
+         path/0, load/0, load/1,
          format_error_reason/1]).
 
 -export_type([result/0, result/1, error_reason/0, entry/0]).
@@ -60,22 +60,18 @@ path() ->
       Path
   end.
 
--spec parse() -> result([entry()]).
-parse() ->
-  parse(path()).
+-spec load() -> result([entry()]).
+load() ->
+  load(path()).
 
--spec parse(file:name_all()) -> result([entry()]).
-parse(Path) ->
+-spec load(file:name_all()) -> result([entry()]).
+load(Path) ->
   case file:read_file(Path) of
     {ok, Data} ->
-      parse_data(Data);
+      netrc_parser:parse(Data);
     {error, Reason} ->
       {error, {read_file, Reason, Path}}
   end.
-
--spec parse_data(binary()) -> result([entry()]).
-parse_data(Data) ->
-  netrc_parser:parse(Data).
 
 -spec format_error_reason(error_reason()) -> unicode:chardata().
 format_error_reason({read_file, Reason, Path}) ->
