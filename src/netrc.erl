@@ -14,11 +14,11 @@
 
 -module(netrc).
 
--export([search/2,
+-export([search/1, search/2,
          path/0, load/0, load/1,
          format_error_reason/1]).
 
--export_type([result/0, result/1, error_reason/0, entry/0]).
+-export_type([result/0, result/1, entry/0, query/0, error_reason/0]).
 
 -type result() :: ok | {error, error_reason()}.
 -type result(Type) :: {ok, Type} | {error, error_reason()}.
@@ -41,6 +41,10 @@
       | {unexpected_token, atom()}
       | {truncated_token, binary()}
       | {invalid_token, binary(), binary(), unicode:chardata()}.
+
+-spec search(query()) -> [entry()].
+search(Query) ->
+  netrc_cache:search(Query).
 
 -spec search(query(), [entry()]) -> [entry()].
 search(Query, Entries) ->

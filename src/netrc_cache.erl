@@ -18,7 +18,7 @@
 
 -behaviour(gen_server).
 
--export([start_link/1, stop/1]).
+-export([start_link/1, stop/1, search/1]).
 -export([init/1, terminate/2,
          handle_continue/2, handle_call/3, handle_cast/2, handle_info/2]).
 
@@ -38,6 +38,10 @@ start_link(Options) ->
 -spec stop(ref()) -> ok.
 stop(Ref) ->
   gen_server:stop(Ref).
+
+-spec search(netrc:query()) -> [netrc:entry()].
+search(Query) ->
+  gen_server:call(?MODULE, {search, Query}, infinity).
 
 -spec init(list()) -> et_gen_server:init_ret(state()).
 init([Options]) ->
@@ -63,6 +67,9 @@ handle_continue(reload, State) ->
 
 -spec handle_call(term(), {pid(), et_gen_server:request_id()}, state()) ->
         et_gen_server:handle_call_ret(state()).
+handle_call({search, Query}, _From, State = #{entries := Entries}) ->
+  MatchingEntries = netrc:search(Query, Entries),
+  {reply, MatchingEntries, State};
 handle_call(Msg, From, State) ->
   ?LOG_WARNING("unhandled call ~p from ~p", [Msg, From]),
   {reply, unhandled, State}.
