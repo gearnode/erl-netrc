@@ -12,10 +12,12 @@ parse_test_() ->
                  Parse(<<"machine example.com">>)),
    ?_assertEqual({ok, [#{machine => <<"example.com">>,
                          login => <<"foo">>,
-                         password => <<"bar">>}]},
+                         password => <<"bar">>,
+                         account => <<"lol">>}]},
                  Parse(<<"machine\texample.com "
                          "login  foo\n\t"
-                         "password \t bar\n  ">>)),
+                         "password \t bar\n  "
+                         "account lol">>)),
    ?_assertEqual({ok, [#{machine => default,
                          port => 42}]},
                  Parse(<<"default\t port \n42\n">>)),

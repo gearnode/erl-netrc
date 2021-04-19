@@ -21,7 +21,8 @@
       | {machine, binary()}
       | {port, binary() | inet:port_number()}
       | {login, binary()}
-      | {password, binary()}.
+      | {password, binary()}
+      | {account, binary()}.
 
 -spec parse(binary()) -> netrc:result([netrc:entry()]).
 parse(Data) ->
@@ -60,7 +61,8 @@ parse_tokens(Data, Tokens) ->
     {Name, Rest} when
         Name =:= <<"machine">>;
         Name =:= <<"login">>;
-        Name =:= <<"password">> ->
+        Name =:= <<"password">>;
+        Name =:= <<"account">> ->
       parse_value(Rest, Name, fun parse_binary/1, Tokens);
     {Name, Rest} when
         Name =:= <<"port">> ->

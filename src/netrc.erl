@@ -27,12 +27,14 @@
         #{machine := binary() | default,
           port => binary() | inet:port_number(),
           login => binary(),
-          password => binary()}.
+          password => binary(),
+          account => binary()}.
 
 -type query() ::
         #{machine := binary(),
           port => binary() | inet:port_number(),
-          login => binary()}.
+          login => binary(),
+          account => binary()}.
 
 -type error_reason() ::
         {read_file, term(), file:name_all()}
