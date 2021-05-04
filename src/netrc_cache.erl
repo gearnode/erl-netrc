@@ -92,6 +92,9 @@ reload(State) ->
     {ok, Entries} ->
       ?LOG_DEBUG("~b entries loaded", [length(Entries)]),
       {ok, State#{entries => Entries}};
+    {error, {read_file, enoent, Path}} ->
+      ?LOG_DEBUG("netrc file not found at ~ts", [Path]),
+      {ok, State};
     {error, Reason} ->
       {error, Reason}
   end.
